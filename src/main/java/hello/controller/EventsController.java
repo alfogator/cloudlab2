@@ -1,8 +1,10 @@
 package hello.controller;
 
-import hello.EventNotFoundException;
+import hello.errors.EventNotFoundException;
 import hello.model.Event;
 import hello.repository.EventsRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +17,8 @@ import java.util.Optional;
 @RestController
 public class EventsController {
 
+    private static final Logger log = LoggerFactory.getLogger(EventsController.class);
+
     @Autowired
     EventsRepository eventsRepository;
 
@@ -23,20 +27,12 @@ public class EventsController {
         return eventsRepository.findAll();
     }
 
-    // GET /events            tutti gli eventi
-    // GET /events/1          evento con id 1
-    // POST /events           crea nuovo evento
-    // PUT /events/1          update evento 1
-    // DELETE /events/1       cancella evento 1
-
-
-
     @GetMapping("/events/{id}")
     public Event fetchEvent(@PathVariable long id) {
         Optional<Event> event = eventsRepository.findById(id);
 
-        if (!event.isPresent())
-            throw new EventNotFoundException();
+            if (!event.isPresent())
+                throw new EventNotFoundException();
 
         return event.get();
     }
