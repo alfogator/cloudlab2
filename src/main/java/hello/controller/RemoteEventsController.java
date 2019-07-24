@@ -24,38 +24,11 @@ public class RemoteEventsController {
 
     private Map<String, String> urls = new HashMap<String, String>();
 
-    @Autowired
-    EventsRepository eventsRepository;
-
-    @GetMapping("/remote/events")
-    public List<Event> fetchRemoteEvents() {
-        RestTemplate restTemplate = new RestTemplate();
-
-        // Single
-        restTemplate.getForObject("http://localhost:8080/events/1", Event.class);
-
-        // restTemplate.getForObject("http://localhost:8080/events", List<Event>.class);
-
-        ResponseEntity<List<Event>> response = restTemplate.exchange(
-                "http://localhost:8080/events/",
-                HttpMethod.GET,
-                null,
-                new ParameterizedTypeReference<List<Event>>() {
-                });
-        List<Event> events = response.getBody();
-
-        return events;
-    }
-
-    // /events/1
-    // GET /remote/events/it/1
     @GetMapping("/remote/events/{country}")
     public List<Event> fetchCountryEvents(@PathVariable String country) {
         RestTemplate restTemplate = new RestTemplate();
 
-        urls.put("us", "https://alfo.cloud-lab.it/hello/events");
-        urls.put("fr", "https://pasquale.cloud-lab.it/hello/events");
-
+        initUrls();
 
         String url = urls.get(country);
         log.info("Using url " + url);
@@ -72,5 +45,17 @@ public class RemoteEventsController {
         } else {
             throw new InvalidCountryCodeException();
         }
+    }
+
+    private void initUrls() {
+        urls.put("us", "https://alfo.cloud-lab.it/hello/events");
+        urls.put("fr", "https://pasquale.cloud-lab.it/hello/events");
+        urls.put("it", "https://danilo.cloud-lab.it/hello/events");
+        urls.put("nl", "https://francesco.cloud-lab.it/hello/events");
+        urls.put("nz", "https://stefano.cloud-lab.it/hello/events");
+        urls.put("ma", "https://souad.cloud-lab.it/hello/events");
+        urls.put("no", "https://luca.cloud-lab.it/hello/events");
+        urls.put("ph", "https://rose.cloud-lab.it/hello/events");
+        urls.put("pe", "https://ana.cloud-lab.it/hello/events");
     }
 }
